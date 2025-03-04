@@ -14,6 +14,78 @@ Steps:
 ---deserializeStudent(): This method deserializes the Student object from the file using ObjectInputStream. If successful, it returns the deserialized Student object.
 ---Exception Handling: The program handles FileNotFoundException, IOException, and ClassNotFoundException during the serialization and deserialization processes.
 
+code:
+import java.io.*;
+
+// Student class implementing Serializable
+class Student implements Serializable {
+    private static final long serialVersionUID = 1L; // Ensure class consistency
+    private int id;
+    private String name;
+    private double gpa;
+
+    // Constructor
+    public Student(int id, String name, double gpa) {
+        this.id = id;
+        this.name = name;
+        this.gpa = gpa;
+    }
+
+    // Display student details
+    public void displayStudent() {
+        System.out.println("Student ID: " + id + ", Name: " + name + ", GPA: " + gpa);
+    }
+}
+
+public class StudentSerialization {
+    private static final String FILE_NAME = "student.ser";
+
+    // Method to serialize Student object
+    public static void serializeStudent(Student student) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            out.writeObject(student);
+            System.out.println("Student object has been serialized and saved to file.");
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: File not found.");
+        } catch (IOException e) {
+            System.out.println("Error: Unable to write to file.");
+            e.printStackTrace();
+        }
+    }
+
+    // Method to deserialize Student object
+    public static Student deserializeStudent() {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            Student student = (Student) in.readObject();
+            System.out.println("Student object has been deserialized.");
+            return student;
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: File not found.");
+        } catch (IOException e) {
+            System.out.println("Error: Unable to read from file.");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Error: Class not found.");
+        }
+        return null;
+    }
+
+    // Main method to test serialization and deserialization
+    public static void main(String[] args) {
+        Student student1 = new Student(1, "John Doe", 3.75);
+        serializeStudent(student1);
+
+        Student deserializedStudent = deserializeStudent();
+        if (deserializedStudent != null) {
+            System.out.println("Deserialized Student Details:");
+            deserializedStudent.displayStudent();
+        }
+        new File(FILE_NAME).delete();
+        deserializeStudent(); 
+
+        
+    }
+}
 
 
 Test Cases:
